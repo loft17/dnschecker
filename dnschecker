@@ -1,0 +1,29 @@
+#!/bin/bash
+# DNSChecker
+# (c) Copyright 2022 - https://www.joseromera.net
+
+#setup colors
+CYAN='\e[0;36m'
+GREEN='\033[92m'
+RED='\e[1;31m'
+NoColor='\033[0m' # No Color
+
+if [[ $2 ]]
+	then
+		DOMAIN=$2;
+
+        cat dnslist.txt | while read LINEA; do
+            DNS_SERVER=$(echo $LINEA | cut -d ";" -f 1)
+            DNS_IP=$(echo $LINEA | cut -d ";" -f 2)
+
+            echo -e "$CYAN" "\n$DNS_SERVER" "$NoColor"
+            if RESULTADO=`dig @$DNS_IP $1 $DOMAIN +short 2>/dev/null` ; then
+                echo -e "$DNS_IP" "\t\t$RESULTADO" "$GREEN" "\xE2\x9C\x94" "$NoColor"
+            else
+                echo -e "$DNS_SERVER" "\t\t$RESULTADO" "$RED" "\xE2\x9D\x8C" "$NoColor"
+            fi
+        done
+	else
+		echo "Usage : dnschecker <domainname>"
+fi
+echo ""
